@@ -24,7 +24,7 @@ async function main() {
     
 
     // Save the deployed contract address to the constants file
-    const constantsFilePath = '../FrontEnd/my-app/public/constants.js';
+    const constantsFilePath = '../FrontEnd/public/constants.js';
     const constantsFileContent = fs.readFileSync(constantsFilePath, 'utf8');
     const updatedContent = constantsFileContent.replace(/address: ".*"/, `address: "${nftCollectionFactory.address}"`);
     fs.writeFileSync(constantsFilePath, updatedContent, 'utf8');

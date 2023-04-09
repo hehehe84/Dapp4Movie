@@ -1,5 +1,6 @@
 const { BN, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 const { expect } = require('chai');
+const BigNumber = require('bignumber.js');
 const MyNFT = artifacts.require('MyNFT');
 const NFTMarketplace = artifacts.require('NFTMarketplace');
 const SetProposer = artifacts.require("SetProposer");
@@ -9,18 +10,21 @@ contract('NFTMarketplace', function (accounts) {
     const owner = accounts[0];
     const user1 = accounts[1];
     const user2 = accounts[2];
-    const proposer = accounts[3];
+    const MarketPlaceAddress = accounts[3];
     const royaltyRecipient = accounts[4];
     const tokenId = new BN('1');
     const price = new BN('1000');
     const quantity = new BN('3');
     const royaltyPercentage = new BN('500');
+    const royaltyMarketPlace = new BN('50');
 
     beforeEach(async function () {
         this.nftFactory = await NFTCollectionFactory.new({ from: owner });
         this.myNFT = await MyNFT.new({ from: owner });
         this.setProposer = await SetProposer.new({ from: owner});        
         this.marketplace = await NFTMarketplace.new(this.myNFT.address, { from: owner });
+
+        this.marketplace.teamAddr = MarketPlaceAddress;
 
         //Creation of a proposer if we need to test collection created by a Proposer
         // await this.Factory.addProposer(proposer, { from: owner });
@@ -116,16 +120,19 @@ contract('NFTMarketplace', function (accounts) {
         beforeEach(async function () {
             await this.myNFT.setApprovalForAll(this.marketplace.address, true, { from: user1 });
             await this.marketplace.createOffer(tokenId, price, quantity, { from: user1 });
+            // this.marketplace = await NFTMarketplace.new(this.myNFT.address, MarketPlaceAddress, { from: owner });
         });
 
-        it('should buy NFT and pay royalties', async function () {
+        it('should buy NFT and pay royalties to collection maker and DApp Team', async function () {
             const buyQuantity = new BN('2');
             const totalPrice = price.mul(buyQuantity);
             const royaltyAmount = totalPrice.mul(royaltyPercentage).div(new BN('10000'));
-            const sellerRevenue = totalPrice.sub(royaltyAmount);
+            const royaltyTeam = totalPrice.mul(royaltyMarketPlace).div(new BN('10000'));
+            const sellerRevenue = totalPrice.sub(royaltyAmount).sub(royaltyTeam);
         
             const royaltyRecipientBalanceBefore = await web3.eth.getBalance(royaltyRecipient);
-            const sellerBalanceBefore = await web3.eth.getBalance(user1);        
+            const sellerBalanceBefore = await web3.eth.getBalance(user1); 
+            const teamBalanceBefore = await web3.eth.getBalance(MarketPlaceAddress);
             
             await this.marketplace.buyNFT(tokenId, buyQuantity, { from: user2, value: totalPrice });
 
@@ -138,10 +145,13 @@ contract('NFTMarketplace', function (accounts) {
 
             const royaltyRecipientBalanceAfter = await web3.eth.getBalance(royaltyRecipient);
             const sellerBalanceAfter = await web3.eth.getBalance(user1);
+            const teamBalanceAfter = await web3.eth.getBalance(MarketPlaceAddress);
 
             expect(new BN(royaltyRecipientBalanceAfter)).to.be.bignumber.equal(new BN(royaltyRecipientBalanceBefore).add(royaltyAmount));
-            expect(new BN(sellerBalanceAfter)).to.be.bignumber.equal(new BN(sellerBalanceBefore).add(sellerRevenue)/*.sub(gasCost)*/);
+            expect(new BN(sellerBalanceAfter)).to.be.bignumber.equal(new BN(sellerBalanceBefore).add(sellerRevenue));
+            expect(new BN(teamBalanceAfter)).to.be.bignumber.equal(new BN(teamBalanceBefore).add(royaltyTeam));
         });
+
 
         it('should emit an event of the sale', async function() {
             const buyQuantity = new BN('2');

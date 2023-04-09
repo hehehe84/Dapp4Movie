@@ -1,0 +1,13 @@
+{"description":"Standard",
+"image":"ipfs://QmQ3ooTustVgU4U4wztRnJiE5N4nu6sp63Znh1vqmTt596/0.png",
+"name":"Tabalry",
+"attributes": [
+    {
+      "trait_type": "Issue Price", 
+      "value": "0.02 Matic"
+    }, 
+    {
+      "trait_type": "ROI at Break Even", 
+      "value": "0%"
+    }]
+}

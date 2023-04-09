@@ -1,0 +1,13 @@
+{"description":"Medium",
+"image":"ipfs://QmUTC47xY4E1ZwsNQKvUvqK6UWK3csJWfqsvMroKSmy9CQ/1.png",
+"name":"Tenet",
+"attributes": [
+    {
+      "trait_type": "Issue Price", 
+      "value": "0.05 Matic"
+    }, 
+    {
+      "trait_type": "ROI at Break Even", 
+      "value": "70%"
+    }]
+}

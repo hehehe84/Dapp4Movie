@@ -30,7 +30,7 @@ export default function Home() {
       </Head>
       <Layout>
         {isConnected ? (
-          <Text>DApp a préciser !</Text>
+          <Text>DApp4Movies </Text>
         ) : (
           <Alert status='warning' width="50%">
             <AlertIcon />

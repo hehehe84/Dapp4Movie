@@ -1,62 +1,5 @@
-const NFTCollectionFactory = {
+export const NFTCollectionFactory = {
     ABI: [
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_addr",
-                    "type": "address"
-                }
-            ],
-            "name": "addProposer",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "string",
-                    "name": "_ProjectName",
-                    "type": "string"
-                },
-                {
-                    "internalType": "string",
-                    "name": "_launcher",
-                    "type": "string"
-                },
-                {
-                    "internalType": "string",
-                    "name": "baseURI",
-                    "type": "string"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "publicPrice",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "maxSupply",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "numbID",
-                    "type": "uint256"
-                }
-            ],
-            "name": "createNFTCollection",
-            "outputs": [
-                {
-                    "internalType": "address",
-                    "name": "collectionAddress",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
         {
             "anonymous": false,
             "inputs": [
@@ -139,8 +82,14 @@ const NFTCollectionFactory = {
             "type": "event"
         },
         {
-            "inputs": [],
-            "name": "renounceOwnership",
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_addr",
+                    "type": "address"
+                }
+            ],
+            "name": "addProposer",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -148,13 +97,44 @@ const NFTCollectionFactory = {
         {
             "inputs": [
                 {
+                    "internalType": "string",
+                    "name": "_ProjectName",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "_launcher",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "baseURI",
+                    "type": "string"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "publicPrice",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "maxSupply",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "numbID",
+                    "type": "uint256"
+                }
+            ],
+            "name": "createNFTCollection",
+            "outputs": [
+                {
                     "internalType": "address",
-                    "name": "newOwner",
+                    "name": "collectionAddress",
                     "type": "address"
                 }
             ],
-            "name": "transferOwnership",
-            "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
         },
@@ -189,14 +169,34 @@ const NFTCollectionFactory = {
             ],
             "stateMutability": "view",
             "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "renounceOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "newOwner",
+                    "type": "address"
+                }
+            ],
+            "name": "transferOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
         }
     ],
-    address: "0xAF67D817A8FCf0df8d4eFCB6aADBa30C89c68501",
-    addressLocal: "0x2716C5d83C86B2e9Ce2fD34C0370cAd7E17dAeE4"
+    address: "0x315cBd9F6E63994EdA48152D9ac4594cc1ce4087",
+    addressLocal: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 };
-module.exports = { NFTCollectionFactory };
 
-const SetProposer = {
+
+export const SetProposer = {
     ABI: [
         {
             "inputs": [],
@@ -303,9 +303,9 @@ const SetProposer = {
     ],
     address: ""
 };
-module.exports = { SetProposer };
 
-const ERC2981Base = {
+
+export const ERC2981Base = {
     ABI: [
         {
             "anonymous": false,
@@ -468,9 +468,8 @@ const ERC2981Base = {
     ],
     address: ""
 };
-module.exports = { ERC2981Base };
 
-const MyNFT = {
+export const MyNFT = {
     ABI: [
         {
             "inputs": [],
@@ -948,6 +947,13 @@ const MyNFT = {
         },
         {
             "inputs": [],
+            "name": "pause",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "paused",
             "outputs": [
                 {
@@ -1182,6 +1188,13 @@ const MyNFT = {
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "unpause",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -1190,6 +1203,19 @@ const MyNFT = {
                 }
             ],
             "name": "uri",
+            "outputs": [
+                {
+                    "internalType": "string",
+                    "name": "",
+                    "type": "string"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "viewURI",
             "outputs": [
                 {
                     "internalType": "string",
@@ -1216,9 +1242,9 @@ const MyNFT = {
     ],
     address: ""
 };
-module.exports = { MyNFT };
 
-const NFTMarketplace = {
+
+export const NFTMarketplace = {
     ABI: [
         {
             "inputs": [
@@ -1268,7 +1294,7 @@ const NFTMarketplace = {
                 {
                     "indexed": true,
                     "internalType": "uint256",
-                    "name": "itemId",
+                    "name": "tokenId",
                     "type": "uint256"
                 }
             ],
@@ -1518,6 +1544,19 @@ const NFTMarketplace = {
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "royaltyMarketPlace",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "bytes4",
@@ -1531,6 +1570,19 @@ const NFTMarketplace = {
                     "internalType": "bool",
                     "name": "",
                     "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "teamAddr",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
                 }
             ],
             "stateMutability": "view",
@@ -1552,4 +1604,5 @@ const NFTMarketplace = {
     ],
     address: ""
 };
-module.exports = { NFTMarketplace };
+
+// exports = { NFTCollectionFactory, SetProposer, ERC2981Base, MyNFT, NFTMarketplace };

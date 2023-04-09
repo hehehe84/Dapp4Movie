@@ -1,0 +1,13 @@
+{"description":"Standard",
+"image":"ipfs://QmZnakgyzhLwNZdDLcThsVXR74iX3p5Br6gyqiM3LytYiX/0.png",
+"name":"DefiBaikal",
+"attributes": [
+    {
+      "trait_type": "Issue Price", 
+      "value": "0.01 Matic"
+    }, 
+    {
+      "trait_type": "ROI at Break Even", 
+      "value": "70%"
+    }]
+}

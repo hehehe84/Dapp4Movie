@@ -1,0 +1,13 @@
+{"description":"Standard",
+"image":"ipfs://QmPx2vUDTaLN68jUwrekP6qHn2vUdNLi4BMsGgNAHYRiY8/0.png",
+"name":"Apollo11",
+"attributes": [
+    {
+      "trait_type": "Issue Price", 
+      "value": "0.01 Matic"
+    }, 
+    {
+      "trait_type": "ROI at Break Even", 
+      "value": "80%"
+    }]
+}
