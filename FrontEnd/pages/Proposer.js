@@ -29,7 +29,7 @@ export default function Proposer() {
 
     (async function () {
       try {
-        const nftCollectionFactoryAddress = NFTCollectionFactory.addressLocal;
+        const nftCollectionFactoryAddress = NFTCollectionFactory.address;
         const contract = new ethers.Contract(
           nftCollectionFactoryAddress,
           NFTCollectionFactory.ABI,
@@ -66,7 +66,7 @@ export default function Proposer() {
 
   const addProposer = async (proposerAddress) => {
 
-    const nftCollectionFactoryAddress = NFTCollectionFactory.addressLocal;
+    const nftCollectionFactoryAddress = NFTCollectionFactory.address;
     const contract = new ethers.Contract(
       nftCollectionFactoryAddress,
       NFTCollectionFactory.ABI,

@@ -93,7 +93,7 @@ export default function Minting() {
   
       (async function () {
         try {
-          const nftCollectionFactoryAddress = NFTCollectionFactory.addressLocal;
+          const nftCollectionFactoryAddress = NFTCollectionFactory.address;
           const contract = new ethers.Contract(
             nftCollectionFactoryAddress,
             NFTCollectionFactory.ABI,

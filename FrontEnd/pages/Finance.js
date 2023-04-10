@@ -36,7 +36,7 @@ export default function Finance() {
   const createNFTCollection = async () => {
     
     console.log(NFTCollectionFactory);
-    const nftCollectionFactoryAddress = NFTCollectionFactory.addressLocal;
+    const nftCollectionFactoryAddress = NFTCollectionFactory.address;
     console.log(nftCollectionFactoryAddress);
     const contract = new ethers.Contract(
       nftCollectionFactoryAddress,
@@ -102,7 +102,7 @@ export default function Finance() {
 
     (async function () {
       try {
-        const nftCollectionFactoryAddress = NFTCollectionFactory.addressLocal;
+        const nftCollectionFactoryAddress = NFTCollectionFactory.address;
         const contract = new ethers.Contract(
           nftCollectionFactoryAddress,
           NFTCollectionFactory.ABI,

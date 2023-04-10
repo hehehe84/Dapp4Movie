@@ -55,8 +55,8 @@ contract NFTMarketplace is ERC1155Holder, Ownable, ReentrancyGuard {
     constructor(address nftContractAddress) {
         _nftContract = MyNFT(nftContractAddress);
         royaltyMarketPlace = 50;
-        // teamAddr = 0xF847be29EA12b6605D8eb18532e3De53B98DA7A6;
-        teamAddr = 0x90F79bf6EB2c4f870365E785982E1f101E93b906; //Use in order to test in local and make sure that my tests work 
+        teamAddr = 0xF847be29EA12b6605D8eb18532e3De53B98DA7A6;
+        // teamAddr = 0x90F79bf6EB2c4f870365E785982E1f101E93b906; //Use in order to test in local and make sure that my tests work 
         //Correspond to : const MarketPlaceAddress = accounts[3] <=in test
     }
 
