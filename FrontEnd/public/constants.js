@@ -191,7 +191,7 @@ export const NFTCollectionFactory = {
             "type": "function"
         }
     ],
-    address: "0x315cBd9F6E63994EdA48152D9ac4594cc1ce4087",
+    address: "0x7bC0304f18A1BAcFcFc545EC29F5C0B363bb0bFd",
     addressLocal: "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318"
 };
 
