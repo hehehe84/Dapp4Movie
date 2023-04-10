@@ -4,6 +4,7 @@ const fs = require('fs');
 async function main() {
     const deployer = (await hre.ethers.getSigners())[0];
 
+
     const proposer1 = "0x3fdEb5dfb13516476b27D89e5Ae2580cb835CB1b"; //Address of Veronique
     const proposer2 = "0xF3222cD23a5cd225D3A815cBD1842bf8254C5e2b"; //Address of Edouard
     
@@ -13,6 +14,9 @@ async function main() {
     const NFTCollectionFactory = await hre.ethers.getContractFactory("NFTCollectionFactory");
     const nftCollectionFactory = await NFTCollectionFactory.deploy();
     await nftCollectionFactory.deployed();
+    const txhash = await deployer.provider.getTransactionReceipt(nftCollectionFactory.deployTransaction.hash);
+    console.log("Transaction hash:", txhash.transactionHash);
+    console.log("");
     console.log("NFTCollectionFactory deployed to:", nftCollectionFactory.address);
     console.log("");
     //Add Proposers (my associate)
@@ -26,8 +30,9 @@ async function main() {
     // Save the deployed contract address to the constants file
     const constantsFilePath = '../FrontEnd/public/constants.js';
     const constantsFileContent = fs.readFileSync(constantsFilePath, 'utf8');
-    const updatedContent = constantsFileContent.replace(/address: ".*"/, `address: "${nftCollectionFactory.address}"`);
-    fs.writeFileSync(constantsFilePath, updatedContent, 'utf8');
+    const updatedAddr = constantsFileContent.replace(/address: ".*"/, `address: "${nftCollectionFactory.address}"`);
+    const combinedContent = updatedAddr.replace(/txhash: ".*"/, `txhash: "${txhash.transactionHash}"`);
+    fs.writeFileSync(constantsFilePath, combinedContent, 'utf8');
 }
 
 main()

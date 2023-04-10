@@ -1,0 +1,29 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.5.5",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@rainbow-me/rainbowkit": "^0.12.6",
+    "framer-motion": "^10.10.0",
+    "fs": "^0.0.1-security",
+    "ipfs-api": "^26.1.2",
+    "ipfs-http-client": "^60.0.0",
+    "isomorphic-fetch": "^3.0.0",
+    "next": "13.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "wagmi": "^0.12.9"
+  },
+  "devDependencies": {
+    "ethers": "^5.7.2"
+  }
+}
