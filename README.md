@@ -11,10 +11,17 @@ Video of the Demonstration : https://www.loom.com/share/4d319d3e77da4b108426206d
 DApp deployed on Vercel : https://dappfmov.vercel.app/
 
 Schemas of the App :
+
+
 ![excali1](https://user-images.githubusercontent.com/107557688/231003455-28b34888-3257-432a-adb0-6dbe3aa7b91a.png)
+
+
 Schema of the Mint
 
+
 ![Excali2](https://user-images.githubusercontent.com/107557688/231003469-6baaa222-7cf4-48fd-89a9-3d1ab0d7ba5c.png)
+
+
 Schema of the MarketPlace
 
 ### Improvement
