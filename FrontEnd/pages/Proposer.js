@@ -25,6 +25,8 @@ export default function Proposer() {
   useEffect(() => {
     if (!signer || !provider) return;
 
+    let contract;
+
     (async function () {
       try {
         const nftCollectionFactoryAddress = NFTCollectionFactory.addressLocal;
@@ -48,15 +50,17 @@ export default function Proposer() {
           setProposers((prevProposers) => [...prevProposers, proposer]);
         });
 
-        return () => {
-          contract.removeAllListeners('ProposerRegistered');
-        };
-
       } catch (err) {
         console.error('Error fetching events:', err);
       }
       
     })();
+
+    return () => {
+      if (contract) {
+        contract.removeAllListeners('ProposerRegistered');
+      }
+    };
   }, [provider, signer]);
 
 

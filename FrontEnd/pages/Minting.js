@@ -25,11 +25,10 @@ export default function Minting() {
     const [pricePaid, setPricePaid] = useState("")
     const [MyNFTAddress, setMyNFTAddress] = useState([]);
     const [selectedNFTAddress, setSelectedNFTAddress] = useState('');
-    const [imageUrls, setImageUrls] = useState([]);
+    const [personalBalance, setPersonalBalance] = useState("0");
   
     async function fetchIPFSJson(ipfsURI) {
       try {
-        console.log('fetchIPFSJson called with IPFS URI:', ipfsURI);
         const gatewayURL = `https://ipfs.io/ipfs/${ipfsURI}/0.json`; // Replace with the correct IPFS gateway URL
         const response = await fetch(gatewayURL);
         if (!response.ok) {
@@ -37,21 +36,54 @@ export default function Minting() {
         }
         const json = await response.json();
         const imageURL = `${json.image}`;
-        console.log(imageURL);
         return { ...json, imageURL };
       } catch (error) {
         return { noImage: true };
       }
   }
-    
 
+  async function fetchUserBalance(address, contract) {
+    try {
+      const balance = await contract.balanceOf(address);
+      return balance.toString();
+    } catch (error) {
+      console.error('Error fetching user balance:', error);
+      return '0';
+    }
+  }
+  
+  async function updatePersonalBalance() {
+    const balancePromises = nftCollections.map(async (collection) => {
+      const nftContract = new ethers.Contract(
+        collection.collectionAddress,
+        MyNFT.ABI,
+        signer
+      );
+      return await fetchUserBalance(address, nftContract);
+    });
+  
+    const balances = await Promise.all(balancePromises);
+    const totalBalance = balances
+      .reduce((acc, curr) => acc.add(ethers.BigNumber.from(curr)), ethers.BigNumber.from(0))
+      .toString();
+  
+    setPersonalBalance(totalBalance);
+  }
 
-  async function updateMintingLeft(collectionAddress, newTotalSupply) {
+  async function updateUserBalance(contractAddress) {
+    const nftContract = new ethers.Contract(
+      contractAddress,
+      MyNFT.ABI,
+      signer
+    );
+    const userBalance = await fetchUserBalance(address, nftContract);
+    const totalSupply = await nftContract.totalSupply(tokenId);
+
     setNftCollections((prevCollections) =>
-    prevCollections.map((collection) =>
-      collection.collectionAddress === collectionAddress
-        ? { ...collection, totalSupply: newTotalSupply.toString() }
-        : collection
+      prevCollections.map((collection) =>
+        collection.collectionAddress === contractAddress
+          ? { ...collection, balance: userBalance, totalSupply: totalSupply.toString() }
+          : collection
       )
     );
   };
@@ -84,8 +116,8 @@ export default function Minting() {
               const tokenURI = await nftContract.viewURI();
               const baseURI = tokenURI.replace(/\/\d+$/, '');
               const metadata = await fetchIPFSJson(tokenURI);
-              console.log(metadata.image);
               const totalSupply = await nftContract.totalSupply(args.numbID);
+              const userBalance = await fetchUserBalance(nftContract);
               return {
                 projectName: args._ProjectName,
                 launcher: args.launcher,
@@ -97,6 +129,7 @@ export default function Minting() {
                 baseURI,
                 image: metadata.image,
                 totalSupply: totalSupply.toString(),
+                balance: userBalance,
               };
             })
           );
@@ -117,13 +150,52 @@ export default function Minting() {
             ]);
             setMyNFTAddress((prevAddresses) => [...prevAddresses, _collectionAddress]);
           });
+
+          contract.on('Transfer', async (tokenId, amount, buyer, event) => {
+            await updateUserBalance(event.address);
+            await updatePersonalBalance();
+          });
+        
+          
   
         } catch (err) {
           console.error('Error fetching events:', err);
         }
+
+        updatePersonalBalance();
+
+        return () => {
+          contract.removeAllListeners('Transfer');
+        };
         
       })();
     }, [provider, signer]);
+
+
+
+    useEffect(() => {
+      if (mintAmount === '' || !selectedNFTAddress) {
+        setPricePaid('0');
+        return;
+      }
+      console.log('mintAmount:', mintAmount);
+    
+      const selectedCollection = nftCollections.find(
+        (collection) => collection.collectionAddress.toLowerCase() === selectedNFTAddress.toLowerCase()
+      );
+      console.log('selectedNFTAddress:', selectedNFTAddress);
+    
+      if (!selectedCollection) {
+        setPricePaid('');
+        return;
+      }
+      console.log('nftCollections:', nftCollections);
+    
+      const parsedMintAmount = ethers.BigNumber.from(mintAmount);
+      const priceToPay = ethers.BigNumber.from(selectedCollection.publicPrice).mul(parsedMintAmount);
+      setPricePaid(ethers.utils.formatEther(priceToPay));
+    }, [mintAmount, selectedNFTAddress, nftCollections]);
+    
 
     const mintNFT = async () => {
       if (!selectedNFTAddress) {
@@ -136,7 +208,7 @@ export default function Minting() {
         });
         return;
       }
-
+    
       const parsedTokenId = parseInt(tokenId, 10);
       if (isNaN(parsedTokenId)) {
         toast({
@@ -148,8 +220,7 @@ export default function Minting() {
         });
         return;
       }
-
-       // Convert mintAmount to a BigNumber
+    
       const parsedMintAmount = ethers.BigNumber.from(mintAmount);
       if (parsedMintAmount.isZero()) {
         toast({
@@ -161,10 +232,9 @@ export default function Minting() {
         });
         return;
       }
-
+    
       const pricePaidInWei = ethers.utils.parseEther(pricePaid.toString());
-
-      
+    
       const contract = new ethers.Contract(
         selectedNFTAddress,
         MyNFT.ABI,
@@ -172,31 +242,32 @@ export default function Minting() {
       );
     
       try {
-        const tx = await contract.publicMint(
-          parsedTokenId,
-          parsedMintAmount,
-          {value: pricePaidInWei}
+        const tx = await contract.publicMint( parsedTokenId, parsedMintAmount,
+          { value: pricePaidInWei }
         );
         await tx.wait();
-        const updatedTotalSupply = await nftContract.totalSupply();
-        updateMintingLeft(selectedNFTAddress, updatedTotalSupply);
+        await updateUserBalance(selectedNFTAddress);
+        setPersonalBalance((prevBalance) => {
+          const newBalance = ethers.BigNumber.from(prevBalance).add(parsedMintAmount).toString();
+          return newBalance;
+        });
         toast({
-            title: 'Congratulations',
-            description: "NFT minted!",
-            status: 'success',
-            duration: 4000,
-            isClosable: true,
-        })
+          title: 'Congratulations',
+          description: "NFT minted!",
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+        });
       } catch (e) {
         toast({
-            title: 'Error',
-            description: "Failed to mint NFT.",
-            status: 'error',
-            duration: 4000,
-            isClosable: true,
-        })
-        console.log(e)
-      };
+          title: 'Error',
+          description: "Failed to mint NFT.",
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
+        console.log(e);
+      }
     };
     
     return (
@@ -210,7 +281,7 @@ export default function Minting() {
         <Layout height="80vh">
           {isConnected ? (
             <Tabs variant='soft-rounded' colorScheme='blue' >
-              <Box Top="0" Position="">
+              <Box>
                 <TabList justifyContent="center" alignItems="center" width="100%" Top="0">
                     <Tab>NFT Collections</Tab>
                     <Tab>Mint NFT</Tab>
@@ -229,6 +300,7 @@ export default function Minting() {
                           <Th>Id/Collections</Th>
                           <Th>Image</Th>
                           <Th>Minting left</Th>
+                          <Th>Personal Balance</Th>
                         </Tr>
                       </Thead>
                       <Tbody>
@@ -246,6 +318,7 @@ export default function Minting() {
                               )}
                             </Td>
                             <Td>{(Number(collection.maxSupply) - Number(collection.totalSupply)).toString()}</Td>
+                            <Td>{personalBalance}</Td>
                           </Tr>
                         ))}
                       </Tbody>
@@ -276,10 +349,10 @@ export default function Minting() {
                         value={mintAmount}
                         onChange={(e) => setMintAmount(e.target.value)}
                       />
-                      <Input 
+                      <Input
                         placeholder='Price (in MATIC)'
                         value={pricePaid}
-                        onChange={(e) => setPricePaid(e.target.value)}
+                        readOnly
                       />
                       <Button colorScheme="blue" onClick={mintNFT}>
                         Mint NFT

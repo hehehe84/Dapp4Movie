@@ -89,6 +89,12 @@ contract MyNFT is ERC1155, ERC1155Burnable, ERC1155Supply, Pausable, ERC2981Base
     * deployed.
     */
 
+    /**
+    * @dev Add of Transfer event to have an update of the number of NFT in the
+    * collection
+    */
+    event Transfer(uint256 quantity, address buyer);
+
     function initialize(
         string calldata ProjectName_, 
         string calldata launcher_, 
@@ -174,6 +180,7 @@ contract MyNFT is ERC1155, ERC1155Burnable, ERC1155Supply, Pausable, ERC2981Base
         require(totalSupply(id) + amount <= maxSupply, "You cannot mint this quantity"); // < because initial index = 0
         require(id < numbID, "Sorry, it is impossible to mint a NFT with this ID" ); //1 nft => <1,...
         _mint(msg.sender, id, amount, "");
+        emit Transfer(amount, msg.sender);
     }
 
     /**
